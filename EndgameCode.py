@@ -53,7 +53,7 @@ def generate_fen(board_list):
 
 
 
-
+# Generates random board from given number of pieces (queen, rook, bishop, knight)
 def generate_random_board(q = 0, r = 0, b = 0, n = 0):
     mylist = generate_list(q,r,b,n)
 
