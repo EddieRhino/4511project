@@ -97,24 +97,32 @@ def generate_random_board(q = 0, r = 0, b = 0, n = 0):
 
 
 
-def eval_function(mode, move, board):
+def eval_function(mode, move, board2):
     total_ev = 0
-    our_king_position = int(board.king(chess.WHITE))
-    board.push_san(move)
-    black_moves = list(board.legal_moves)
-    curr_board = board.piece_map()
-    king_position = int(board.king(chess.BLACK))
+    move2 = str(move)
+    curr_board = board2.piece_map()
+    our_orig_king_position = int(board2.king(chess.WHITE))
+    our_orig_queen_position = -1
+    for x in range(0,64):
+        if(str(curr_board.get(x)) == "Q"):
+            our_queen_position = x
+            break
+    print(list(board2.legal_moves))
+    board2.push_san(move2)
+    black_moves = list(board2.legal_moves)
+    curr_board = board2.piece_map()
+    king_position = int(board2.king(chess.BLACK))
     for x in range(0, len(black_moves)-1):
             black_moves[x] = str(black_moves[x])
     def isCheckmateInOne():
-        return board.is_checkmate()
+        return board2.is_checkmate()
     
     def isStalemate():
-        return board.is_stalemate()
+        return board2.is_stalemate()
 
     def canBeTaken():
         for x in black_moves:
-            if(move[2:] == x[:2]):
+            if(str(move2[2:]) == str(x)[:2]):
                 return True
     
     def isKingOnBackRank():
@@ -140,47 +148,68 @@ def eval_function(mode, move, board):
 
     def queenKingInCorner():
         which_corner = isKingOnBackRank()
+        our_king_pos = int(board2.king(chess.WHITE))
         queenLocation = -1
         for x in range(0,64):
             if(str(curr_board.get(x)) == "Q"):
                 queenLocation = x
                 break
-        king_move_val = int(board.king(chess.WHITE)) - our_king_position
-        if(which_corner >= 5):
-            if(which_corner == 5 and queenLocation == 25): #king target square = 10
-                if(int(board.king(chess.WHITE)) == 10):
-                    return 10000
-                
-            elif(which_corner == 6 and queenLocation == 33): #king target square = 50
-                if(int(board.king(chess.WHITE)) == 50):
-                    return 10000
-            elif(which_corner == 7 and queenLocation == 38): #king target square = 54
-                if(int(board.king(chess.WHITE)) == 54):
-                    return 10000
-            elif(which_corner == 8 and queenLocation == 13): #king target square = 14
-                if(int(board.king(chess.WHITE)) == 14):
-                    return 10000
+        king_move_val = our_king_pos - our_orig_king_position
+        if(((which_corner == 5) or (king_position == 8)) and queenLocation == 25): #king target square = 10
+            if(queenLocation != our_orig_queen_position):
+                return -1000
+            elif(our_king_pos == 10):
+                return 10000
+            elif(abs(10-our_king_pos) < abs(10-our_orig_king_pos)):
+                return 200
             else:
                 return 0
-
+            
+        elif(((which_corner == 6) or (king_position == 48)) and queenLocation == 33): #king target square = 50
+            if(queenLocation != our_orig_queen_position):
+                return -1000
+            elif(our_king_pos == 50):
+                return 10000
+            elif(abs(50-our_king_pos) < abs(50-our_orig_king_pos)):
+                return 200
+            else:
+                return 0
+        elif(((which_corner == 7) or (king_position == 55)) and queenLocation == 38): #king target square = 54
+            if(queenLocation != our_orig_queen_position):
+                return -1000
+            elif((our_king_pos) == 54):
+                return 10000
+            elif(abs(54-our_king_pos) < abs(54-our_orig_king_pos)):
+                return 200
+            else:
+                return 0
+        elif(((which_corner == 8) or (king_position == 15)) and queenLocation == 13): #king target square = 14
+            if(queenLocation != our_orig_queen_position):
+                return -1000
+            elif(our_king_pos == 14):
+                return 10000
+            elif(abs(14-our_king_pos) < abs(14-our_orig_king_pos)):
+                return 200
+            else:
+                return 0
         else:
             return 0
-    
+
     def bring_our_king_to_middle():
-        king_move_val = int(board.king(chess.WHITE)) - our_king_position
+        king_move_val = int(board2.king(chess.WHITE)) - our_orig_king_position
         
-        if(our_king_position <= 15):
+        if(our_orig_king_position <= 15):
             if((king_move_val) >= 8):
                 return 100
             else:
                 return 0
-        elif(our_king_position >= 48):
+        elif(our_orig_king_position >= 48):
             if((king_move_val) <= -8):
                 return 100
             else:
                 return 0
-        elif((our_king_position % 8 == 0) or (our_king_position % 8 == 1)):
-            if(our_king_position >= 32):
+        elif((our_orig_king_position % 8 == 0) or (our_orig_king_position % 8 == 1)):
+            if(our_orig_king_position >= 32):
                 if(king_move_val == -7):
                     return 100
                 elif(king_move_val == 1):
@@ -194,8 +223,8 @@ def eval_function(mode, move, board):
                     return 90
                 else:
                     return 0
-        elif((our_king_position % 8 == 6) or (our_king_position % 8 == 7)):
-            if(our_king_position >= 32): #54 to 45
+        elif((our_orig_king_position % 8 == 6) or (our_orig_king_position % 8 == 7)):
+            if(our_orig_king_position >= 32): #54 to 45
                 if(king_move_val == -9):
                     return 100
                 elif(king_move_val == -1):
@@ -228,16 +257,16 @@ def eval_function(mode, move, board):
             if(str(curr_board.get(x)) == "Q"):
                 queenLocation = x
                 break
-        board.set_piece_at(queenLocation, chess.Piece(chess.KNIGHT, chess.WHITE))
+        board2.set_piece_at(queenLocation, chess.Piece(chess.KNIGHT, chess.WHITE))
         if(isKingOnBackRank() == 0):
-            if(is_check() == True):
-                board.set_piece_at(queenLocation, chess.Piece(chess.QUEEN, chess.WHITE))
+            if(board2.is_check() == True):
+                board2.set_piece_at(queenLocation, chess.Piece(chess.QUEEN, chess.WHITE))
                 return 10
             else:
-                board.set_piece_at(queenLocation, chess.Piece(chess.QUEEN, chess.WHITE))
+                board2.set_piece_at(queenLocation, chess.Piece(chess.QUEEN, chess.WHITE))
                 return 0
         else:
-            if((is_check() == True) and (queen_cuts_king_on_edge_rank() != 0)):
+            if((board2.is_check() == True) and (queen_cuts_king_on_edge_rank() != 0)):
                 return 50
             else:
                 return 0
@@ -252,9 +281,10 @@ def eval_function(mode, move, board):
         return -100000
     elif(canBeTaken() == True):
         return -100000
+    total_ev = queenKingInCorner() + queenKnightsDistance() + queen_cuts_king_on_edge_rank() + bring_our_king_to_middle()
     
 
-    board.pop()
+#    board.pop()
     return total_ev
 
 
@@ -262,44 +292,46 @@ def eval_function(mode, move, board):
 
 def main():
     board = generate_random_board(1)
-    print(board)
-
     mode = "q"
     move_dict = {}
     legal_moves = list(board.legal_moves)
     curr_board = board.piece_map()
-    
-    move_counter = 1
+    found_move = False
+    move_counter = 0
     #while(board.is_checkmate() == False and board.is_stalemate() == False and board.is_insufficient_material() == False and board.can_claim_fifty_moves() == False and board.can_claim_draw() == False):
     for x in range(1,10):
         legal_moves = list(board.legal_moves)
+        found_move = False
+        move_counter += 1
         for y in range(0, len(legal_moves)-1):
             legal_moves[y] = str(legal_moves[y])
         print(board)
+        print("\n")
+        print(len(legal_moves))
         move_dict.clear()
         for y in legal_moves:
-            highest_eval = -1000000
-            highest_eval_idx = -1
             if(move_counter % 2 == 1):
-                move_dict.update{y:eval_function(mode, y, board)}
+                move_dict.update({y:eval_function(mode, str(y), board)})
                 if(move_dict.get(y) == 1000000):
                     board.push_san(y)
-                    move_counter += 1
+                    found_move = True
                     break
-                for z in range(0,len(legal_moves)-1):
-                    if(move_dict.get(legal_moves[z]) > highest):
-                        move_dict.get(legal_moves[z]) = highest
-                        highest_eval_idx = z
-                board.push_san(legal_moves[highest_eval_idx])
-                move_counter += 1
-                break
+                
                 
             else:
                 rand = random.randint(0,len(legal_moves)-1)
                 move = legal_moves[rand]
                 board.push_san(move)
-                move_counter += 1
                 break
+        if((found_move == False) and (move_counter % 2 == 1)):
+            highest_eval = -1000000
+            highest_eval_idx = -1
+            for z in range(0,len(legal_moves)-1):
+                print((move_dict.get(legal_moves[z])))
+                if(int(move_dict.get(legal_moves[z])) > highest_eval):
+                    highest_eval = int(move_dict.get(legal_moves[z]))
+                    highest_eval_idx = z
+            board.push_san(legal_moves[highest_eval_idx])
     
 if __name__ == '__main__':
     main()
