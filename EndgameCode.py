@@ -133,20 +133,9 @@ def eval_function(mode, move, board):
             return False
         else:
             for x in range(0,len(black_moves)):
-                if(chess.square_name(our_new_queen_position) == str((black_moves[x]))[:2]):
-                    print("FOUND ONE")
+                if(chess.square_name(our_new_queen_position) == str((black_moves[x]))[2:]):
                     return True
     
-    def ourKingInCenter():
-        if(our_orig_king_position <= 15):
-            return False
-        elif(our_orig_king_position >= 48):
-            return False
-        elif((our_orig_king_position % 8 == 0) or (our_orig_king_position % 8 == 1)):
-            return False
-        elif((our_orig_king_position % 8 == 6) or (our_orig_king_position % 8 == 7)):
-            return False
-        return True
     
     def isKingOnBackRank():
         #returns 1 if on the 'a' file, 2 if on 'h' file, 3 if on 8th rank, 4 if on 1st rank, 
@@ -179,61 +168,61 @@ def eval_function(mode, move, board):
             if(str(curr_board.get(x)) == "Q"):
                 queenLocation = x
                 break
-        if(((which_corner == 5) or (king_position == 8)) and (queenLocation == 25) and (ourKingInCenter() == True)): #king target square = 10
-            if(our_king_pos == 10):
+        if(((which_corner == 5) or (king_position == 8)) and (queenLocation == 25)): #king target square = 10
+            if(our_king_pos == 18):
                 return 10000
-            elif(abs(10-our_king_pos) < abs(10-our_orig_king_position)):
-                return 200
+            elif(abs(18-our_king_pos) < abs(18-our_orig_king_position)):
+                return 100
             else:
                 return 0
-        elif(((which_corner == 5) or (king_position == 1)) and (queenLocation == 11) and (ourKingInCenter() == True)): #king target square = 17
-            if(our_king_pos == 17):
+        elif(((which_corner == 5) or (king_position == 1)) and (queenLocation == 11)): #king target square = 17
+            if(our_king_pos == 18):
                 return 10000
-            elif(abs(17-our_king_pos) < abs(17-our_orig_king_position)):
-                return 200
+            elif(abs(18-our_king_pos) < abs(18-our_orig_king_position)):
+                return 100
             else:
                 return 0
             
-        elif(((which_corner == 6) or (king_position == 48)) and (queenLocation == 33) and (ourKingInCenter() == True)): #king target square = 50
-            if(our_king_pos == 50):
+        elif(((which_corner == 6) or (king_position == 48)) and (queenLocation == 33)): #king target square = 50
+            if(our_king_pos == 42):
                 return 10000
-            elif(abs(50-our_king_pos) < abs(50-our_orig_king_position)):
-                return 200
+            elif(abs(42-our_king_pos) < abs(42-our_orig_king_position)):
+                return 100
             else:
                 return 0
-        elif(((which_corner == 6) or (king_position == 57)) and (queenLocation == 51) and (ourKingInCenter() == True)): #king target square = 41
-            if(our_king_pos == 41):
+        elif(((which_corner == 6) or (king_position == 57)) and (queenLocation == 51)): #king target square = 41
+            if(our_king_pos == 42):
                 return 10000
-            elif(abs(41-our_king_pos) < abs(41-our_orig_king_position)):
-                return 200
+            elif(abs(42-our_king_pos) < abs(42-our_orig_king_position)):
+                return 100
             else:
                 return 0
-        elif(((which_corner == 7) or (king_position == 55)) and (queenLocation == 38)and (ourKingInCenter() == True)): #king target square = 53
-            if((our_king_pos) == 53):
+        elif(((which_corner == 7) or (king_position == 55)) and (queenLocation == 38)): #king target square = 53
+            if((our_king_pos) == 45):
                 return 10000
-            elif(abs(53-our_king_pos) < abs(53-our_orig_king_position)):
-                return 200
+            elif(abs(45-our_king_pos) < abs(45-our_orig_king_position)):
+                return 100
             else:
                 return 0
-        elif(((which_corner == 7) or (king_position == 62)) and (queenLocation == 52) and (ourKingInCenter() == True)): #king target square = 46
-            if((our_king_pos) == 46):
+        elif(((which_corner == 7) or (king_position == 62)) and (queenLocation == 52)): #king target square = 46
+            if((our_king_pos) == 45):
                 return 10000
             elif(abs(46-our_king_pos) < abs(46-our_orig_king_position)):
-                return 200
+                return 100
             else:
                 return 0
-        elif((((which_corner == 8) or (king_position == 15)) and (queenLocation == 30)) and (ourKingInCenter() == True)): #king target square = 13
-            if(our_king_pos == 13):
+        elif((((which_corner == 8) or (king_position == 15)) and (queenLocation == 30))): #king target square = 13
+            if(our_king_pos == 21):
                 return 10000
-            elif(abs(13-our_king_pos) < abs(13-our_orig_king_position)):
-                return 200
+            elif(abs(21-our_king_pos) < abs(21-our_orig_king_position)):
+                return 100
             else:
                 return 0
-        elif(((which_corner == 8) or (king_position == 6)) and (queenLocation == 12) and (ourKingInCenter() == True)): #king target square = 22
-            if(our_king_pos == 22):
+        elif(((which_corner == 8) or (king_position == 6)) and (queenLocation == 12)): #king target square = 22
+            if(our_king_pos == 21):
                 return 10000
-            elif(abs(22-our_king_pos) < abs(22-our_orig_king_position)):
-                return 200
+            elif(abs(21-our_king_pos) < abs(21-our_orig_king_position)):
+                return 100
             else:
                 return 0
         else:
@@ -244,54 +233,54 @@ def eval_function(mode, move, board):
         
         if(our_orig_king_position <= 15):
             if((king_move_val) >= 8):
-                return 100
+                return 500
             else:
                 return 0
         elif(our_orig_king_position >= 48):
             if((king_move_val) <= -8):
-                return 100
+                return 500
             else:
                 return 0
         elif((our_orig_king_position % 8 == 0) or (our_orig_king_position % 8 == 1)):
             if(our_orig_king_position >= 32):
                 if(king_move_val == -7):
-                    return 100
+                    return 500
                 elif(king_move_val == 1):
-                    return 90
+                    return 400
                 else:
                     return 0
             else: #9 to 18
-                if(king_move_val == 7):
-                    return 100
+                if(king_move_val == 9):
+                    return 500
                 elif(king_move_val == 1):
-                    return 90
+                    return 400
                 else:
                     return 0
         elif((our_orig_king_position % 8 == 6) or (our_orig_king_position % 8 == 7)):
             if(our_orig_king_position >= 32): #54 to 45
-                if(king_move_val == -9):
-                    return 100
+                if(king_move_val == -7):
+                    return 500
                 elif(king_move_val == -1):
-                    return 90
+                    return 400
                 else:
                     return 0
             else: #14 to 21
-                if(king_move_val == 9):
-                    return 100
+                if(king_move_val == 7):
+                    return 500
                 elif(king_move_val == -1):
-                    return 90
+                    return 400
                 else:
                     return 0
         return 0
 
     def queen_cuts_king_on_edge_rank():
-        if((isKingOnBackRank() == 1) and (move[2] == 'b')):
+        if((isKingOnBackRank() == 1) and (move2[2] == 'b')):
             return 20
-        elif((isKingOnBackRank() == 2) and (move[2] == 'g')):
+        elif((isKingOnBackRank() == 2) and (move2[2] == 'g')):
             return 20
-        elif((isKingOnBackRank() == 3) and (move[3] == '7')):
+        elif((isKingOnBackRank() == 3) and (move2[3] == '7')):
             return 20
-        elif((isKingOnBackRank() == 4) and (move[3] == '2')):
+        elif((isKingOnBackRank() == 4) and (move2[3] == '2')):
             return 20
         else:
             return 0
@@ -377,9 +366,7 @@ def main():
             print(board)
         else:
             continue
-    print("\n")
-    print(board)
-    print("\n")
+
     if(board.is_checkmate() == True):
         print("CHECKMATE")
     elif(board.is_stalemate() == True):
@@ -390,7 +377,6 @@ def main():
         print("50")
     elif(board.can_claim_draw() == True):
         print("draw dumbass")
-    print("\nDONE")
     print("GAME OVER")
     
 if __name__ == '__main__':
