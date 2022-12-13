@@ -1,0 +1,7 @@
+
+1. generate all checkmate positions
+2. For each checkmate position:
+    a. Go back one move (all possible positions)
+    b. Refrain from going back to any previous moves
+    c. if all moves are previous moves, this branch will terminate
+    d. when all possible positions have been reached, we have our tablebase
