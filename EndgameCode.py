@@ -1,8 +1,56 @@
 import random
 import chess
+import csv
 
 dictionary = {}
 black_dictionary = {}
+
+
+def MoveToString(move):
+    return str(move)
+
+def StringToMove(string_in):
+    return Move.from_uci(string_in)
+
+
+# Return Dictionary
+def WriteFileToDict(filename):
+    dictionary = {}
+    arr = None
+    try:
+        with open(filename, "r") as f:
+            data = f.read()
+            arr = data.split("\n")
+    except:
+        print("File write to dictionary failed")
+        return None
+    
+    for i in range(len(arr)):
+        if arr[i] == "":
+            continue
+        arr[i] = arr[i].split("\t")
+        if arr[i][1] != "None":
+            arr[i][1] = arr[i][1].split(", ")
+            arr[i][1][0] = arr[i][1][0][1::]      
+            arr[i][1][1] = arr[i][1][1][:len(arr[i][1][1]) - 1:]  
+
+    for item in arr:
+        if item == "":
+            continue
+        if item[1] == "None":
+            dictionary[item[0]] = None
+        else:
+            num = int(item[1][0])
+            str_move = item[1][1]
+            str_move = str_move[15:len(str_move) - 2:]
+            move = chess.Move.from_uci(str_move)
+            dictionary[item[0]] = (num,move)
+    return dictionary
+
+            
+
+
+
 
 def generate_list(q = 0, r = 0, b = 0, n = 0):
     rows, cols = (8, 8)
@@ -114,15 +162,23 @@ class UserAgent(ChessAgent):
     def move(self, board):
         legal_moves = list(board.legal_moves)
         print("Please enter your move:")
-        san = input()
-        move = chess.Move.from_uci(str(san))
-        while(not move in legal_moves):
-            print(san)
-            print("Illegal move, please enter a legal move ")
-            print("Legal moves: ", legal_moves)
+        move = None
+        try:
             san = input()
+            move = chess.Move.from_uci(san)
+        except:
+            move = None
+        while(not move in legal_moves):  
+            print("Illegal move, please enter a legal move")
+            print("Legal moves: ", legal_moves)
+            try:
+                san = input()
+                move = chess.Move.from_uci(san)
+            except:
+                print("Illegal move, please enter a legal move")
+                move = None
             
-        board.push_san(str(san))
+        board.push(move)
         return board
 
 
@@ -135,9 +191,14 @@ class DictionaryAgent(ChessAgent):
         space = fen.find(" ")
         comp_fen = fen[:space + 2:]
 
-        (move,num) = self.dictionary.get(comp_fen)
+        depth = None
+        move = None
+
+        if comp_fen in self.dictionary and self.dictionary[comp_fen] != None:
+            (depth,move) = self.dictionary[comp_fen]
+
         if move != None:
-            board.push_san(move)
+            board.push(move)
             return board
 
         # If (For some reason) move isn't in the dictionary, do a random move

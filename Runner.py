@@ -1,5 +1,7 @@
 from EndgameCode import *
 import time
+from EndgameCode2 import *
+import json
 
 table = None
 try:
@@ -9,15 +11,21 @@ try:
 except:
     table = CreateWhitePossiblePositionsTable()
     with open('table_file.txt', 'w') as f:
-        for line in lines:
+        for line in table:
             f.write("%s\n" % line)
 
-dictionary = {}
-for pos in table:
-    comp_fen = 
 
 
-dictionary = CreateDictionary(0,0,0,0,table)
+dictionary = WriteFileToDict("dictionary.txt")
 
-chess_game = Game(DictionaryAgent(dictionary), RandomAgent())
-chess_game.play_random_game(1,0,0,0)
+# dictionary = DictionaryMaker(table)
+# dictionary.fill_dictionary()
+# dictionary.WriteDictToFile("dictionary.txt")
+
+
+# with open('dictionary.txt','w') as dictionary_file:
+#     dictionary_file.write(json.dumps(dictionary.dictionary))
+
+for i in range(20):
+    game = Game(DictionaryAgent(dictionary), UserAgent())
+    game.play_random_game(1,0,0,0)
